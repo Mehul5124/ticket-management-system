@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Ticket, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 
-const Login = () => {
+const AgentLogin = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -42,11 +42,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('');
-    
+
     if (!validate()) return;
 
     setLoading(true);
-    const result = await login(email, password, 'ADMIN');
+    const result = await login(email, password, 'AGENT');
     setLoading(false);
 
     if (result.success) {
@@ -64,8 +64,8 @@ const Login = () => {
             <Ticket size={32} />
             <span>Helpdesk</span>
           </div>
-          <h2 style={{ marginBottom: '4px' }}>Admin Portal</h2>
-          <p className="auth-subtitle">Sign in to manage system & support tickets</p>
+          <h2 style={{ marginBottom: '4px' }}>Agent Portal</h2>
+          <p className="auth-subtitle">Sign in to manage support tickets</p>
         </div>
 
         {apiError && (
@@ -154,14 +154,10 @@ const Login = () => {
             )}
           </button>
         </form>
-
-        <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)' }}>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-            Demo Admin: <strong>admin@helpdesk.com</strong> / <strong>Admin@123</strong>
-          </p>
-        </div>
       </div>
-      
+
+
+
       {/* Inject spin keyframes into page for simple spin animation */}
       <style>{`
         @keyframes spin {
@@ -173,4 +169,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AgentLogin;

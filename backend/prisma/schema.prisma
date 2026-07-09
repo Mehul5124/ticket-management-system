@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // role values: "ADMIN" | "AGENT"
@@ -31,6 +32,7 @@ model Ticket {
   aiSummary     String?
   aiResponse    String?
   aiAutoReplied Boolean    @default(false)
+  agentResponse String?
   assignedToId  String?
   assignedTo    User?      @relation("AssignedTickets", fields: [assignedToId], references: [id])
   auditLogs     AuditLog[]

@@ -89,7 +89,8 @@ gantt
   1. Conduct full security check on JWT routing.
   2. Refine the Light CSS styling to ensure a clean, high-contrast, professional design.
   3. Verify all filter states work seamlessly together.
-  4. Write the final Walkthrough artifact summarizing completed work and verification screenshots.
+  4. **Security Enhancement:** Separated Admin and Agent login portals (`/admin` and `/login`) with backend role verification.
+  5. Write the final Walkthrough artifact summarizing completed work and verification screenshots.
 
 ---
 

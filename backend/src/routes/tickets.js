@@ -92,9 +92,9 @@ router.post('/', authenticate, async (req, res) => {
   }
 });
 
-// PATCH /api/tickets/:id — Update ticket status, priority, or assignment
+// PATCH /api/tickets/:id — Update ticket status, priority, assignment, or agentResponse
 router.patch('/:id', authenticate, async (req, res) => {
-  const { status, priority, assignedToId } = req.body;
+  const { status, priority, assignedToId, agentResponse } = req.body;
   const { id } = req.params;
 
   try {
@@ -104,11 +104,22 @@ router.patch('/:id', authenticate, async (req, res) => {
         ...(status && { status }),
         ...(priority && { priority }),
         ...(assignedToId !== undefined && { assignedToId }),
+        ...(agentResponse && { agentResponse }),
       },
       include: {
         assignedTo: { select: { id: true, name: true, email: true } },
       },
     });
+
+    if (agentResponse) {
+      await prisma.auditLog.create({
+        data: {
+          ticketId: id,
+          action: `AGENT_REPLIED`,
+          performedBy: req.user.name,
+        },
+      });
+    }
 
     await prisma.auditLog.create({
       data: {

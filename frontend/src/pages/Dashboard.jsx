@@ -37,6 +37,14 @@ const Dashboard = () => {
   const [simSubject, setSimSubject] = useState('');
   const [simBody, setSimBody] = useState('');
 
+  // Agent reply
+  const [replyText, setReplyText] = useState('');
+
+  useEffect(() => {
+    // Reset reply text when a new ticket is selected
+    setReplyText('');
+  }, [selectedTicket?.id]);
+
   // New Agent input
   const [agentName, setAgentName] = useState('');
   const [agentEmail, setAgentEmail] = useState('');
@@ -462,10 +470,12 @@ Emma`);
             <span>Helpdesk Support</span>
           </div>
           <div className="navbar-user">
-            <button className="btn btn-secondary" style={{ width: 'auto', gap: '6px', fontSize: '13px', padding: '6px 12px' }} onClick={() => setShowSimulator(true)}>
-              <Send size={14} />
-              <span>Email Simulator</span>
-            </button>
+            {user?.role === 'ADMIN' && (
+              <button className="btn btn-secondary" style={{ width: 'auto', gap: '6px', fontSize: '13px', padding: '6px 12px' }} onClick={() => setShowSimulator(true)}>
+                <Send size={14} />
+                <span>Email Simulator</span>
+              </button>
+            )}
             <div className="user-info">
               <span className="user-name">{user?.name}</span>
               <span className="user-role" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
@@ -989,6 +999,46 @@ Emma`);
                         )}
                       </select>
                     </div>
+
+                    {/* Agent Human Response */}
+                    {selectedTicket.agentResponse && (
+                      <div className="detail-section" style={{ marginTop: '16px' }}>
+                        <div className="ai-box-header" style={{ color: 'var(--status-resolved)' }}>
+                          <CheckCircle size={14} />
+                          <span>Agent Response Sent</span>
+                        </div>
+                        <div className="message-box" style={{ borderColor: 'var(--status-resolved)', backgroundColor: 'rgba(5, 150, 105, 0.02)' }}>
+                          {selectedTicket.agentResponse}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Agent Reply Box */}
+                    {selectedTicket.status !== 'RESOLVED' && (
+                      <div className="detail-section" style={{ marginTop: '16px' }}>
+                        <span className="section-label">Reply to Customer</span>
+                        <textarea
+                          className="form-input"
+                          rows={4}
+                          placeholder="Type your response to the customer..."
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                        />
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginTop: '8px', alignSelf: 'flex-start', width: 'auto', padding: '8px 16px' }}
+                          onClick={async () => {
+                            if (!replyText.trim()) return;
+                            await handleUpdateTicket(selectedTicket.id, { status: 'RESOLVED', agentResponse: replyText });
+                            setReplyText('');
+                          }}
+                          disabled={updatingTicketId === selectedTicket.id || !replyText.trim()}
+                        >
+                          Send Reply & Resolve
+                        </button>
+                      </div>
+                    )}
 
                     {/* AI Actions */}
                     <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
+import AgentLogin from './pages/AgentLogin';
 import Dashboard from './pages/Dashboard';
 
 // Restricts route to authenticated users only
@@ -68,6 +69,14 @@ function App() {
         <Routes>
           <Route 
             path="/login" 
+            element={
+              <PublicOnlyRoute>
+                <AgentLogin />
+              </PublicOnlyRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
             element={
               <PublicOnlyRoute>
                 <Login />

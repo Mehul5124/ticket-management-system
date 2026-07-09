@@ -13,7 +13,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, expectedRole } = req.body;
 
   // --- Input presence check ---
   if (!email || !password) {
@@ -44,6 +44,11 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    if (expectedRole && user.role !== expectedRole) {
+      const portalType = user.role === 'ADMIN' ? 'Admin portal' : 'Agent portal';
+      return res.status(403).json({ error: `Access denied. Please use the ${portalType}.` });
     }
 
     const token = jwt.sign(

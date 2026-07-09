@@ -1,0 +1,15 @@
+# Problem 
+I have a website on which i sell courses and educated people through it. So, the biggest problem i face that we recieve 100s of Email daily regarding problems like Website not loading, I cannot see the course, Payemnt done but cant access the course, Payment failed status show but amount is deducted, Can't login to my account and which course should i purchase and all.
+
+# Solution
+I want to built an ai-powered ticket management system which can solve this issue and answers these question in personalized manner soo student dont feel like it is a general email template. I want to integrate an llm api to my app which can solve this problem and provides automatic reply to all the general and low, medium, high if solvable and possible and sent urgent or extreme hard proble like payment failed but amount deducted or want refund as dont like course or something in such case transfer that email to an customer agent which is a real human which will handle such request. 
+
+# Feature 
+1. I want a website for ticket management system name:- "Helpdesk"
+2. I want to built a login page only for admin, dashboard, proper authenitcation
+3. I want this to be a production grade software soo we will include proper authentication like role-based access, proper form validation and a professional login page with production standard we can also use the Auth0 for authentication or built our own. 
+4. Dashboard :- On dashboard i want a navbar with the app name, user role like admin and a logout button. Then i want a serach bar where i can search for the email with things like topic, email id from which the request came, and a dropdown where i can select the priority wise (LOW, MEDIUM, HIGH, URGENT). and other dropdown by status like resolved, not resolved, review needed etc.
+5. I want to make two ai features like 1] AI Summarizer where i can click the summarizer and the ai generates the clear summary of that email content, soo it is easy for the agents as well as for me to process and understand the issues properly. 2] AI Responder :- In this feature i want a capability like the email which are fetched and shown on the dashboard the ap responder will autonously read the email content and analyze it weather it is solbvable or not, and what is the priority. soo the priority is also set by the ai for the email and then this is great like the ai will auto read the email which lying under low, meduim and some hard and if solbvable then ai will read the email and auto respond to the email liek auto reply to the student on the same email and the harder and extreme and unsolvable by an ai which need human intervention will be transfered to the customer agent of my team 
+6. I will lofin from the login page and then from dahboard i will add my cutomer agents okk. 
+
+** Soo this is what i have some ideas for this project till now can you read this propelry and analyze the gaps and provide the fills and any other great improvement, enhancement or addition.**

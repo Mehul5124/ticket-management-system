@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// role values: "ADMIN" | "AGENT"
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String
+  tickets      Ticket[] @relation("AssignedTickets")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// priority values: "LOW" | "MEDIUM" | "HIGH" | "URGENT"
+// status values:   "PENDING" | "RESOLVED" | "REVIEW_NEEDED"
+model Ticket {
+  id            String     @id @default(uuid())
+  customerEmail String
+  customerName  String
+  subject       String
+  body          String
+  priority      String     @default("PENDING")
+  status        String     @default("PENDING")
+  aiSummary     String?
+  aiResponse    String?
+  aiAutoReplied Boolean    @default(false)
+  assignedToId  String?
+  assignedTo    User?      @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  auditLogs     AuditLog[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  action      String
+  performedBy String
+  createdAt   DateTime @default(now())
+}

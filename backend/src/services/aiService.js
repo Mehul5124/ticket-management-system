@@ -74,10 +74,84 @@ Return ONLY the bullet points as plain text, each starting with "•". No header
 }
 
 /**
+ * Quota-Based Auto-Assignment
+ * ─────────────────────────────────────────────────────────────────────────
+ * Formula:
+ *   Quota per agent = ceil(Total Active Tickets ÷ Number of Agents)
+ *
+ * Strategy:
+ *   1. Count all PENDING + REVIEW_NEEDED tickets currently in the system.
+ *   2. Calculate the fair quota each agent should carry.
+ *   3. Find the agent who is furthest BELOW their quota.
+ *   4. Assign this ticket to that agent.
+ *
+ * Why this is better than simple least-loaded:
+ *   - At scale (1000s of emails/day), the quota adapts dynamically as the
+ *     total ticket volume grows — every agent always carries a fair share.
+ *   - Each ticket is assigned to exactly ONE agent.
+ *   - If no agents exist, the ticket stays unassigned gracefully.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+async function assignByQuota(ticketId) {
+  // Step 1: Fetch all agents with their current ACTIVE ticket count
+  // "Active" = PENDING or REVIEW_NEEDED (exclude RESOLVED — closed work shouldn't count)
+  const agents = await prisma.user.findMany({
+    where: { role: 'AGENT' },
+    select: {
+      id: true,
+      name: true,
+      _count: {
+        select: {
+          tickets: {
+            where: {
+              status: { in: ['PENDING', 'REVIEW_NEEDED'] },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // No agents registered — ticket stays unassigned gracefully
+  if (!agents || agents.length === 0) {
+    console.warn(`[Auto-Assign] No agents available. Ticket ${ticketId} remains unassigned.`);
+    return null;
+  }
+
+  const numAgents = agents.length;
+
+  // Step 2: Calculate total active tickets INCLUDING the one being assigned right now
+  const currentTotal = agents.reduce((sum, a) => sum + a._count.tickets, 0);
+  const totalAfterAssignment = currentTotal + 1;
+
+  // Step 3: Fair quota per agent (round up so nobody is left with more than 1 extra)
+  const quotaPerAgent = Math.ceil(totalAfterAssignment / numAgents);
+
+  // Step 4: Sort agents by current load ascending → agent furthest below quota comes first
+  const sorted = [...agents].sort((a, b) => a._count.tickets - b._count.tickets);
+  const targetAgent = sorted[0];
+
+  // Step 5: Assign the ticket to this agent (single assignment, guaranteed)
+  await prisma.ticket.update({
+    where: { id: ticketId },
+    data: { assignedToId: targetAgent.id },
+  });
+
+  console.log(
+    `[Auto-Assign] Quota: ${quotaPerAgent} tickets/agent ` +
+    `(${totalAfterAssignment} total ÷ ${numAgents} agents). ` +
+    `Ticket → "${targetAgent.name}" (current: ${targetAgent._count.tickets} | quota: ${quotaPerAgent})`
+  );
+
+  return targetAgent;
+}
+
+
+/**
  * Process a new ticket through AI pipeline (autopilot mode).
  * - Classifies priority and solvability
  * - If LOW/MEDIUM and solvable → auto-reply and RESOLVE
- * - Otherwise → set PENDING for human review
+ * - Otherwise → PENDING or REVIEW_NEEDED + auto-assign to least-loaded agent
  */
 async function processTicketWithAI(ticketId) {
   const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
@@ -88,7 +162,7 @@ async function processTicketWithAI(ticketId) {
     analysis = await analyzeTicket(ticket.subject, ticket.body);
   } catch (err) {
     console.error('AI analysis failed:', err);
-    // Fallback: mark as PENDING for human review
+    // Fallback: mark as PENDING and try to auto-assign
     await prisma.ticket.update({
       where: { id: ticketId },
       data: { priority: 'MEDIUM', status: 'PENDING' },
@@ -100,6 +174,18 @@ async function processTicketWithAI(ticketId) {
         performedBy: 'SYSTEM',
       },
     });
+
+    // Still try to assign even on analysis failure
+    const agent = await assignByQuota(ticketId);
+    if (agent) {
+      await prisma.auditLog.create({
+        data: {
+          ticketId,
+          action: `TICKET_AUTO_ASSIGNED`,
+          performedBy: 'SYSTEM',
+        },
+      });
+    }
     return;
   }
 
@@ -107,6 +193,7 @@ async function processTicketWithAI(ticketId) {
   const canAutopilot = isSolvable && (priority === 'LOW' || priority === 'MEDIUM');
 
   if (canAutopilot) {
+    // Autopilot path — AI resolves it, no human assignment needed
     await prisma.ticket.update({
       where: { id: ticketId },
       data: {
@@ -124,11 +211,13 @@ async function processTicketWithAI(ticketId) {
       },
     });
   } else {
+    // Human routing path — set status first
+    const newStatus = isSolvable ? 'REVIEW_NEEDED' : 'PENDING';
     await prisma.ticket.update({
       where: { id: ticketId },
       data: {
         priority,
-        status: isSolvable ? 'REVIEW_NEEDED' : 'PENDING',
+        status: newStatus,
         aiResponse: autoReplyDraft || null,
         aiAutoReplied: false,
       },
@@ -140,7 +229,20 @@ async function processTicketWithAI(ticketId) {
         performedBy: 'AI',
       },
     });
+
+    // Auto-assign to the least-loaded agent (even distribution)
+    const agent = await assignByQuota(ticketId);
+    if (agent) {
+      await prisma.auditLog.create({
+        data: {
+          ticketId,
+          action: `TICKET_AUTO_ASSIGNED_TO_${agent.name.toUpperCase().replace(/\s+/g, '_')}`,
+          performedBy: 'SYSTEM',
+        },
+      });
+    }
   }
 }
 
 module.exports = { analyzeTicket, summarizeTicket, processTicketWithAI };
+

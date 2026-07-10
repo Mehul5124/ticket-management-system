@@ -28,8 +28,8 @@ Priority Guidelines:
 - URGENT: Money deducted but no course access, refund requests, double charges, billing/invoice disputes, account hacked/unauthorized access.
 
 Solvability Guidelines:
-- isSolvable = true: Issue can be resolved with a helpful reply (general queries, login tips, course access guides)
-- isSolvable = false: Requires human intervention (payment disputes, refunds, billing errors)
+- isSolvable = true: Issue can be resolved with a helpful reply (general queries, login tips, course access guides, technical troubleshooting like clearing cache/cookies for video player errors)
+- isSolvable = false: Requires human intervention (payment disputes, refunds, billing errors, backend account fixes)
 
 The autoReplyDraft must be:
 - Written to the specific student (not generic)

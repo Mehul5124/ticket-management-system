@@ -350,6 +350,17 @@ I attempted to purchase the Full Stack Web Development course today. The transac
 I need a refund for the duplicate charge and immediate access to the course. This is extremely frustrating.
 
 Emma`);
+    } else if (type === 'high-solvable') {
+      setSimName('Marcus Johnson');
+      setSimEmail('marcus.j@example.com');
+      setSimSubject('Course video player is completely broken - Black Screen');
+      setSimBody(`Hi Support,
+
+I am trying to study for my finals but the course content is not loading at all. Every time I click on a video lesson, the player just shows a black screen with a continuous spinning wheel. I'm getting a "Platform Error 504" in the console. 
+
+This is highly disruptive to my studying. Please fix this immediately.
+
+Marcus`);
     }
   };
 
@@ -497,9 +508,9 @@ Emma`);
           gridTemplateColumns: activeTab === 'agents'
             ? (sidebarOpen ? '260px 1fr' : '0px 1fr')
             : (sidebarOpen
-                ? (detailOpen ? '260px 1fr 400px' : '260px 1fr 0px')
-                : (detailOpen ? '0px 1fr 400px' : '0px 1fr 0px')
-              ),
+              ? (detailOpen ? '260px 1fr 400px' : '260px 1fr 0px')
+              : (detailOpen ? '0px 1fr 400px' : '0px 1fr 0px')
+            ),
           transition: 'grid-template-columns 0.25s ease',
         }}
       >
@@ -517,65 +528,65 @@ Emma`);
 
 
           {sidebarOpen && <>
-          <div>
-            <h3 className="sidebar-title">Workspace</h3>
-            <ul className="nav-list">
-              <li>
-                <button
-                  className={`nav-item-btn ${activeTab === 'tickets' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('tickets')}
-                >
-                  <Ticket size={16} />
-                  <span>Tickets Dashboard</span>
-                </button>
-              </li>
-              {user?.role === 'ADMIN' && (
-                <li>
-                  <button
-                    className={`nav-item-btn ${activeTab === 'agents' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('agents')}
-                  >
-                    <Users size={16} />
-                    <span>Agent Management</span>
-                  </button>
-                </li>
-              )}
-            </ul>
-          </div>
-
-          {activeTab === 'tickets' && (
             <div>
-              <h3 className="sidebar-title">My Assignments</h3>
+              <h3 className="sidebar-title">Workspace</h3>
               <ul className="nav-list">
                 <li>
                   <button
-                    className={`nav-item-btn ${assignmentFilter === '' ? 'active' : ''}`}
-                    onClick={() => setAssignmentFilter('')}
+                    className={`nav-item-btn ${activeTab === 'tickets' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('tickets')}
                   >
-                    <span>All Tickets</span>
+                    <Ticket size={16} />
+                    <span>Tickets Dashboard</span>
                   </button>
                 </li>
-                <li>
-                  <button
-                    className={`nav-item-btn ${assignmentFilter === 'me' ? 'active' : ''}`}
-                    onClick={() => setAssignmentFilter('me')}
-                  >
-                    <span>Assigned to me</span>
-                  </button>
-                </li>
+                {user?.role === 'ADMIN' && (
+                  <li>
+                    <button
+                      className={`nav-item-btn ${activeTab === 'agents' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('agents')}
+                    >
+                      <Users size={16} />
+                      <span>Agent Management</span>
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
-          )}
 
-          <div style={{ marginTop: 'auto', padding: '12px', borderRadius: '8px', backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-color)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-              <Sparkles size={14} style={{ color: 'var(--accent-primary)' }} />
-              <span style={{ fontSize: '12px', fontWeight: 600 }}>Autopilot Active</span>
+            {activeTab === 'tickets' && (
+              <div>
+                <h3 className="sidebar-title">My Assignments</h3>
+                <ul className="nav-list">
+                  <li>
+                    <button
+                      className={`nav-item-btn ${assignmentFilter === '' ? 'active' : ''}`}
+                      onClick={() => setAssignmentFilter('')}
+                    >
+                      <span>All Tickets</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`nav-item-btn ${assignmentFilter === 'me' ? 'active' : ''}`}
+                      onClick={() => setAssignmentFilter('me')}
+                    >
+                      <span>Assigned to me</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <div style={{ marginTop: 'auto', padding: '12px', borderRadius: '8px', backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                <Sparkles size={14} style={{ color: 'var(--accent-primary)' }} />
+                <span style={{ fontSize: '12px', fontWeight: 600 }}>Autopilot Active</span>
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                Low & Medium solvable issues will be resolved instantly by Gemini.
+              </p>
             </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-              Low & Medium solvable issues will be resolved instantly by Gemini.
-            </p>
-          </div>
           </>}
         </aside>
 
@@ -1071,16 +1082,16 @@ Emma`);
                     <div className="timeline">
                       {selectedTicket.auditLogs?.map((log, index) => (
                         <div key={log.id} className="timeline-item completed" style={{ paddingLeft: '24px' }}>
-                          <CheckCircle 
-                            size={14} 
-                            style={{ 
-                              position: 'absolute', 
-                              left: 0, 
-                              top: '2px', 
-                              color: 'var(--status-resolved)', 
+                          <CheckCircle
+                            size={14}
+                            style={{
+                              position: 'absolute',
+                              left: 0,
+                              top: '2px',
+                              color: 'var(--status-resolved)',
                               backgroundColor: 'var(--bg-surface)',
                               borderRadius: '50%'
-                            }} 
+                            }}
                           />
                           <span style={{ fontWeight: 600 }}>{log.action.replace(/_/g, ' ')}</span>
                           <span className="timeline-time">{formatDate(log.createdAt)}</span>
@@ -1123,15 +1134,18 @@ Emma`);
                 {/* Pre-fill templates buttons */}
                 <div style={{ marginBottom: '20px' }}>
                   <span className="form-label">Load Query Template:</span>
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
-                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => applySimTemplate('easy')}>
-                      Low Priority (Auto-resolves)
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginTop: '6px' }}>
+                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 4px', fontSize: '11px', textAlign: 'center' }} onClick={() => applySimTemplate('easy')}>
+                      Low (Auto)
                     </button>
-                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => applySimTemplate('medium')}>
-                      Medium Priority (Password)
+                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 4px', fontSize: '11px', textAlign: 'center' }} onClick={() => applySimTemplate('medium')}>
+                      Medium (Pass)
                     </button>
-                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => applySimTemplate('hard')}>
-                      Urgent Priority (Billing/Human)
+                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 4px', fontSize: '11px', textAlign: 'center' }} onClick={() => applySimTemplate('high-solvable')}>
+                      High (Solvable)
+                    </button>
+                    <button type="button" className="btn btn-secondary" style={{ padding: '6px 4px', fontSize: '11px', textAlign: 'center' }} onClick={() => applySimTemplate('hard')}>
+                      Urgent (Human)
                     </button>
                   </div>
                 </div>
@@ -1213,24 +1227,24 @@ Emma`);
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="simulator-body">
               <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.5' }}>
                 {confirmDialog.message}
               </p>
             </div>
-            
+
             <div className="simulator-footer">
-              <button 
-                className="btn btn-secondary" 
-                style={{ width: 'auto' }} 
+              <button
+                className="btn btn-secondary"
+                style={{ width: 'auto' }}
                 onClick={() => setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null })}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-primary" 
-                style={{ width: 'auto', backgroundColor: 'var(--priority-high)', borderColor: 'var(--priority-high)' }} 
+              <button
+                className="btn btn-primary"
+                style={{ width: 'auto', backgroundColor: 'var(--priority-high)', borderColor: 'var(--priority-high)' }}
                 onClick={confirmDialog.onConfirm}
               >
                 Delete

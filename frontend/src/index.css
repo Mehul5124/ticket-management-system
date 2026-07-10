@@ -906,3 +906,73 @@ p {
   color: var(--priority-high);
   background-color: rgba(220, 38, 38, 0.05);
 }
+
+/* 📱 Mobile Responsiveness */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    display: flex !important;
+    flex-direction: column;
+    height: auto;
+    overflow: auto;
+  }
+  
+  .navbar {
+    height: auto;
+    padding: 12px 0;
+  }
+  
+  .navbar-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .navbar-user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .nav-item-btn {
+    width: auto;
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+  }
+
+  .ticket-list-container {
+    width: 100%;
+    height: 500px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .detail-panel {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 500px;
+    box-shadow: none !important;
+  }
+
+  .search-input-wrapper {
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+}

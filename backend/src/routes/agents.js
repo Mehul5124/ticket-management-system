@@ -17,7 +17,15 @@ router.get('/', authenticate, authorizeAdmin, async (req, res) => {
         email: true,
         role: true,
         createdAt: true,
-        _count: { select: { tickets: true } },
+        _count: { 
+          select: { 
+            tickets: {
+              where: {
+                status: { not: 'RESOLVED' }
+              }
+            } 
+          } 
+        },
       },
       orderBy: { createdAt: 'desc' },
     });

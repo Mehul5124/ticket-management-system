@@ -39,11 +39,13 @@ When a ticket requires human intervention, it isn't assigned randomly. We engine
 3. The new ticket is mathematically assigned to the agent furthest below their quota, ensuring workload is distributed perfectly evenly.
 
 ### 4. Interactive Dashboard UI
-The central workspace (`Dashboard.jsx`) was meticulously designed for high legibility:
+The central workspace (`Dashboard.jsx`) was meticulously designed for high legibility and premium UX:
+- **Dark Mode Toggle:** Agents can instantly switch between a pristine "Light Theme" and a deep slate "Dark Theme" using a toggle in the navbar. The preference is saved locally for seamless sessions. All inputs, text areas, and dropdowns dynamically invert to maintain perfect visibility.
+- **Rich Text Editor:** The standard text area was upgraded to a full WYSIWYG editor (`react-quill-new`), allowing agents to format their replies with bolding, lists, and headers.
 - **Real-Time Polling:** The dashboard silently fetches updates every 10 seconds, meaning ticket assignments and agent workload counts update automatically without requiring manual page refreshes.
 - **Collapsible Layout:** The left navigation sidebar and right Ticket Detail panel can be collapsed or expanded, allowing agents to focus entirely on reading tickets.
-- **Custom Modals:** We replaced ugly default browser alerts with beautiful, centered toast notifications and confirmation dialogs for destructive actions (like deleting tickets).
-- **Agent Reply System:** Agents have a dedicated textarea to write and send manual replies directly to the customer. When sent, the ticket resolves, the response is visually logged, and a clean green checkmark appears in the Audit Log timeline.
+- **Custom Toast Notifications:** We replaced ugly default browser alerts with beautiful, themed "floating card" toast notifications that adapt to both light and dark modes while maintaining status-colored borders (e.g., green for success).
+- **Agent Reply System:** When a reply is sent via the Rich Text editor, the ticket automatically resolves, the formatted response is logged as an HTML block, and a clean green checkmark appears in the Audit Log timeline.
 
 ---
 

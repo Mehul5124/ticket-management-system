@@ -4,8 +4,10 @@ import {
   Ticket, LogOut, Search, Plus, User, CheckCircle,
   AlertCircle, Sparkles, Send, RefreshCw,
   Users, Trash2, Shield, X, HelpCircle,
-  ChevronLeft, ChevronRight, Menu
+  ChevronLeft, ChevronRight, Menu, Moon, Sun
 } from 'lucide-react';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 const Dashboard = () => {
   const { user, logout, token } = useAuth();
@@ -36,6 +38,19 @@ const Dashboard = () => {
   const [simEmail, setSimEmail] = useState('');
   const [simSubject, setSimSubject] = useState('');
   const [simBody, setSimBody] = useState('');
+
+  // Dark Mode State
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   // Agent reply
   const [replyText, setReplyText] = useState('');
@@ -481,6 +496,14 @@ Marcus`);
             <span>Helpdesk Support</span>
           </div>
           <div className="navbar-user">
+            <button 
+              className="btn-icon" 
+              onClick={() => setIsDarkMode(!isDarkMode)} 
+              style={{ marginRight: '8px' }}
+              title="Toggle Dark Mode"
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             {user?.role === 'ADMIN' && (
               <button className="btn btn-secondary" style={{ width: 'auto', gap: '6px', fontSize: '13px', padding: '6px 12px' }} onClick={() => setShowSimulator(true)}>
                 <Send size={14} />
@@ -1018,9 +1041,7 @@ Marcus`);
                           <CheckCircle size={14} />
                           <span>Agent Response Sent</span>
                         </div>
-                        <div className="message-box" style={{ borderColor: 'var(--status-resolved)', backgroundColor: 'rgba(5, 150, 105, 0.02)' }}>
-                          {selectedTicket.agentResponse}
-                        </div>
+                        <div className="message-box" style={{ borderColor: 'var(--status-resolved)', backgroundColor: 'rgba(5, 150, 105, 0.02)' }} dangerouslySetInnerHTML={{ __html: selectedTicket.agentResponse }} />
                       </div>
                     )}
 
@@ -1028,14 +1049,14 @@ Marcus`);
                     {selectedTicket.status !== 'RESOLVED' && (
                       <div className="detail-section" style={{ marginTop: '16px' }}>
                         <span className="section-label">Reply to Customer</span>
-                        <textarea
-                          className="form-input"
-                          rows={4}
-                          placeholder="Type your response to the customer..."
-                          value={replyText}
-                          onChange={(e) => setReplyText(e.target.value)}
-                          style={{ resize: 'vertical', fontFamily: 'inherit' }}
-                        />
+                        <div style={{ backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)' }}>
+                          <ReactQuill 
+                            theme="snow" 
+                            value={replyText} 
+                            onChange={setReplyText} 
+                            placeholder="Type your formatted response to the customer..."
+                          />
+                        </div>
                         <button
                           className="btn btn-primary"
                           style={{ marginTop: '8px', alignSelf: 'flex-start', width: 'auto', padding: '8px 16px' }}

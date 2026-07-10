@@ -37,6 +37,52 @@
   --radius-lg: 14px;
 }
 
+[data-theme='dark'] {
+  --bg-main: #0f172a;           /* Deep Dark Main */
+  --bg-surface: #1e293b;        /* Slate Surface */
+  --bg-surface-hover: #334155;  /* Hover Slate */
+  --border-color: #334155;      /* Dark Border */
+  --border-focus: #818cf8;      /* Light Indigo Focus */
+  
+  --text-primary: #f8fafc;      /* Light Text */
+  --text-secondary: #94a3b8;    /* Muted Light Text */
+  --text-muted: #64748b;        /* Slate Muted */
+
+  /* Priority & Status Pills (High Legibility, Solid Borders) */
+  --priority-low: #10b981;       
+  --priority-medium: #fbbf24;    
+  --priority-high: #ef4444;      
+  --priority-urgent: #a78bfa;    
+  
+  --status-resolved: #10b981;
+  --status-pending: #60a5fa;     
+  --status-review: #fbbf24;
+
+  --accent-primary: #6366f1;     
+  --accent-primary-hover: #818cf8;
+  --bg-input: #0f172a;
+}
+
+/* ReactQuill Dark Mode Overrides */
+[data-theme='dark'] .ql-toolbar.ql-snow {
+  border-color: var(--border-color);
+  background-color: var(--bg-surface-hover);
+}
+[data-theme='dark'] .ql-container.ql-snow {
+  border-color: var(--border-color);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+[data-theme='dark'] .ql-snow .ql-stroke {
+  stroke: var(--text-secondary);
+}
+[data-theme='dark'] .ql-snow .ql-fill {
+  fill: var(--text-secondary);
+}
+[data-theme='dark'] .ql-snow .ql-picker {
+  color: var(--text-secondary);
+}
+
 /* Base resets */
 * {
   box-sizing: border-box;
@@ -57,6 +103,11 @@ a {
   color: var(--accent-primary);
   text-decoration: none;
   transition: color 0.15s ease;
+}
+
+input, select, textarea, option {
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
 }
 
 a:hover {
@@ -402,6 +453,7 @@ p {
   border: 1px solid var(--border-color);
   outline: none;
   background-color: var(--bg-main);
+  color: var(--text-primary);
 }
 
 .search-input:focus {
@@ -415,6 +467,7 @@ p {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   background-color: var(--bg-surface);
+  color: var(--text-primary);
   outline: none;
   cursor: pointer;
 }
@@ -751,8 +804,9 @@ p {
 }
 
 .toast {
-  background-color: var(--text-primary);
-  color: white;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   padding: 12px 20px;
   border-radius: var(--radius-sm);
   font-size: 14px;
